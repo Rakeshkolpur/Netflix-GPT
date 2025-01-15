@@ -1,44 +1,79 @@
 import { signOut } from "firebase/auth";
-import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { getImageURL } from "../utils/assetsPatch";
+import { useDispatch, useSelector } from "react-redux";
+import { auth } from "../utils/firebase";
+import { useEffect } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { addUser, removeUser } from "../utils/userSlice";
+import { LOGO } from "../utils/constants";
+
 const Header = () => {
-  const logoURL = getImageURL('logo.png');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
+
+  useEffect(() => {
+
+    const unsubcribe =onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { uid, email, displayName, photoURL } = user;
+        dispatch(addUser({ uid, email, displayName, photoURL }));
+        navigate("/browse");
+      } else {
+        dispatch(removeUser());
+        navigate("/");
+      }
+    });
+    // Unsubscribe from the listener when the component unmounts
+    return ()=>unsubcribe();
+  }, [dispatch]);
+
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
-        // Sign-out successful.
         navigate("/");
       })
       .catch(() => {
-        // An error happened.
         navigate("/error");
       });
   };
+
   return (
-    <div className="absolute w-full px-8 py-2 bg-gradient-to-b from-black flex justify-between">
-      <img
-        className="w-44"
-        src="https://help.nflxext.com/helpcenter/OneTrust/oneTrust_production/consent/87b6a5c0-0104-4e96-a291-092c11350111/01938dc4-59b3-7bbc-b635-c4131030e85f/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png"
-        alt="Netflix Logo"
-      />
-      {user && <div className="flex">
-        {user?.photoURL ? (
-          <img alt="usericon" src={user?.photoURL} />
-        ) : (
-          <img alt="defaulticon" src={logoURL}/>
-        )}
-        <button
-          onClick={handleSignOut}
-          className="bg-red-800 text-white p-2 rounded"
-        >
-          SignOut
-        </button>
-      </div>}
-    </div>
+    <header
+      className={`fixed top-0 left-0 w-full p-4 flex justify-between items-center z-10 ${
+        user ? "" : ""
+      }`}
+    >
+      <a href="/">
+        {" "}
+        <img
+          className="w-32 cursor-pointer text-red-800"
+          src={LOGO}
+          alt="Netflix Logo"
+        />
+      </a>
+      {user && (
+        <div className="flex items-center space-x-4">
+          {user.photoURL ? (
+            <img
+              alt="usericon"
+              src={user.photoURL}
+              className="w-10 h-10 rounded-full border-2 border-white"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-gray-500 flex items-center justify-center text-white">
+              {user.displayName ? user.displayName[0] : "U"}
+            </div>
+          )}
+          <button
+            onClick={handleSignOut}
+            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Sign Out
+          </button>
+        </div>
+      )}
+    </header>
   );
 };
 
