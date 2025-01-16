@@ -11,7 +11,7 @@ const VideoBackground = ({ movieId }) => {
   return (
     <div className="absolute top-0 left-0 w-full h-full z-[-1] overflow-hidden">
       <iframe
-        className="absolute top-0 left-0 w-full h-full"
+        className=" absolute top-0 left-0 w-full h-full"
         src={youtubeUrl}
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
