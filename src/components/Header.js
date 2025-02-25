@@ -5,16 +5,17 @@ import { auth } from "../utils/firebase";
 import { useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { addUser, removeUser } from "../utils/userSlice";
-import { LOGO } from "../utils/constants";
-import{toggleGptSearchView} from "../utils/gptSlice"
+import { LOGO, SUPPORTED_LANGUAGES } from "../utils/constants";
+import { toggleGptSearchView } from "../utils/gptSlice";
+import { changLanguage } from "../utils/configSlice";
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
+  const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
 
   useEffect(() => {
-
-    const unsubcribe =onAuthStateChanged(auth, (user) => {
+    const unsubcribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         const { uid, email, displayName, photoURL } = user;
         dispatch(addUser({ uid, email, displayName, photoURL }));
@@ -25,7 +26,7 @@ const Header = () => {
       }
     });
     // Unsubscribe from the listener when the component unmounts
-    return ()=>unsubcribe();
+    return () => unsubcribe();
   }, [dispatch]);
 
   const handleSignOut = () => {
@@ -39,9 +40,13 @@ const Header = () => {
   };
 
   const handleGPTSearch = () => {
-    // toggle GPT Search Button 
-      dispatch(toggleGptSearchView())
-  }
+    // toggle GPT Search Button
+    dispatch(toggleGptSearchView());
+  };
+
+  const handleLanguageChnage = (e) => {
+    dispatch(changLanguage(e.target.value));
+  };
 
   return (
     <header
@@ -59,7 +64,26 @@ const Header = () => {
       </a>
       {user && (
         <div className="flex items-center space-x-4">
-          <button onClick={handleGPTSearch} className="text-lg text-white bg-purple-800 rounded-lg p-2">GPT Search</button>
+          {showGptSearch && (
+            <select
+              className="p-2 bg-gray-800 text-white rounded-lg"
+              name="language"
+              id="language"
+              onChange={handleLanguageChnage}
+            >
+              {SUPPORTED_LANGUAGES.map((lang) => (
+                <option key={lang.identifier} value={lang.identifier}>
+                  {lang.name}
+                </option>
+              ))}
+            </select>
+          )}
+          <button
+            onClick={handleGPTSearch}
+            className="text-lg text-white bg-purple-800 rounded-lg p-2"
+          >
+           {showGptSearch ? "HomePage" : "GPT-Search"}
+          </button>
           {user.photoURL ? (
             <img
               alt="usericon"

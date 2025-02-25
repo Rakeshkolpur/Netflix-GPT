@@ -31,6 +31,9 @@
   -Tailwindd class to main container look awesme
   -MovieCards updated Popular Treding Top-Rated
   -ChatGPT OpenAI 
+  -GPT SearchBar 
+  -(Bonous) Multi-language Feature in our App
+  - Integrate GPT (APIS)
 
 #Features
 -Login/Sign-UP

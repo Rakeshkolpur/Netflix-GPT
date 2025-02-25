@@ -9,6 +9,7 @@ export const LOGO ="https://help.nflxext.com/helpcenter/OneTrust/oneTrust_produc
   };
   
   export const IMG_CDN_URL = 'https://image.tmdb.org/t/p/w500';
+  export const SUPPORTED_LANGUAGES = [{identifier: 'en', name: 'English'}, {identifier: 'hindi', name: 'Hindi'}, {identifier: 'spanish', name: 'Spanish'}];
 
 //   fetch('https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1', options)
 //     .then(res => res.json())
