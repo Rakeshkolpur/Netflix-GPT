@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { addUser, removeUser } from "../utils/userSlice";
 import { LOGO } from "../utils/constants";
-
+import{toggleGptSearchView} from "../utils/gptSlice"
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -38,6 +38,11 @@ const Header = () => {
       });
   };
 
+  const handleGPTSearch = () => {
+    // toggle GPT Search Button 
+      dispatch(toggleGptSearchView())
+  }
+
   return (
     <header
       className={`fixed top-0 left-0 w-full p-4 flex justify-between items-center z-10 ${
@@ -54,6 +59,7 @@ const Header = () => {
       </a>
       {user && (
         <div className="flex items-center space-x-4">
+          <button onClick={handleGPTSearch} className="text-lg text-white bg-purple-800 rounded-lg p-2">GPT Search</button>
           {user.photoURL ? (
             <img
               alt="usericon"

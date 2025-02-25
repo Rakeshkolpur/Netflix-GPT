@@ -29,6 +29,8 @@
   -Update Store with Trailer video Data
   -Embedded the Youtub video and make it autop play
   -Tailwindd class to main container look awesme
+  -MovieCards updated Popular Treding Top-Rated
+  -ChatGPT OpenAI 
 
 #Features
 -Login/Sign-UP
